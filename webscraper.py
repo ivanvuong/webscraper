@@ -42,7 +42,7 @@ class McDonaldsScraper():
     
     def mcdonalds_links(self) -> list:
         '''Returns a list of links to scrape from the McDonalds job site, equal to approximately 5000 records'''
-        return [f"https://jobs.mchire.com/jobs?page_size=10&page_number={i}&sort_by=headline&sort_order=ASC" for i in range(1,510)]
+        return [f"https://jobs.mchire.com/jobs?page_size=10&page_number={i}&sort_by=headline&sort_order=ASC" for i in range(1,501)]
     
     def get_job_details(self, link: str) -> tuple:
         '''Scrape the job details from the given link, including the description, hourly rate and types of job. 
@@ -132,7 +132,7 @@ class McDonaldsScraper():
         logging.info(f"Starting web scrape of {len(self.links)} McDonalds job listing pages, with {len(self.links) * 10} job listings")
         for link in self.links:
             for attempt in range(3):
-                self.driver.get(link)
+                self.driver.    get(link)
                 try:
                     WebDriverWait(self.driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//ul[@class='results-list front']/li[@class='results-list__item']")))
                     job_list = self.driver.find_elements(By.XPATH, "//ul[@class='results-list front']/li[@class='results-list__item']")
@@ -158,6 +158,7 @@ class McDonaldsScraper():
                             })
                         except NoSuchElementException as e:
                             logging.warning(f"Missing data in job listing: {e}")
+                    break
                 except TimeoutException as e:
                     if attempt == 2:
                         logging.error(f"Timeout while loading page {link} after 3 attempts: {e}")
@@ -196,5 +197,5 @@ class McDonaldsScraper():
 if __name__ == "__main__":
     scraper = McDonaldsScraper()
     scraper.scrape_mcdonalds_jobs()
-    scraper.save_array_to_json("mcdjobs.json")
+    scraper.save_array_to_json("mcdonaldsjobs.json")
     print(len(scraper.jobs))
